@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Timetable Viewer</title>
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+  <link rel="stylesheet" href="wing.css">
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body class="text-center">
+  <div class="row menu">
+    <div class="col left">
+      <p>Niveau:</p>
+      <select name="" id="code" onchange="updateImg()">
+        <optgroup label="M2">
+          <option value="68419887">M2 SA</option>
+          <option value="68419888">M2 SR</option>
+          <option value="68419883">M2 MIAGE I.</option>
+          <option value="6">M2 MIAGE A.</option>
+        </optgroup>
+        <optgroup label="M1">
+          <option value="68425740">M1 INFO G1</option>
+          <option value="68425741">M1 INFO G2</option>
+          <option value="68426833">M1 INFO SA</option>
+          <option value="68426834">M1 INFO SR</option>
+          <option value="68419919">M1 MIAGE I.</option>
+          <option value="68419886">M1 MIAGE A.</option>
+        </optgroup>
+        <optgroup label="L3">
+          <option value="68419893">L3 SA</option>
+          <option value="68419892">L3 SR</option>
+          <option value="68419891">L3 MIAGE I.</option>
+          <option value="7">L3 MIAGE A.</option>
+          <option value="68426751">L3 DOUBLE</option>
+        </optgroup>
+        <optgroup label="L2">
+          <option value="68426361">L2 INFO G1</option>
+          <option value="68426362">L2 INFO G2</option>
+          <option value="68426891">L2 INFO G3</option>
+          <option value="68426987">L2 INFO G4</option>
+        </optgroup>
+        <optgroup label="L1">
+          <option value="18">L1 MI G1</option>
+          <option value="8">L1 MI G2</option>
+          <option value="68426495">L1 MI G3</option>
+          <option value="68426747">L1 MI G4</option>
+          <option value="68426748">L1 MI G5</option>
+          <option value="68426749">L1 MI G6</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="col left">
+      <p>Semaine:</p>
+      <div class="">
+        <input id="week" type="number" value="40" style="display: none;">
+
+        <button type="button" onclick="change(-1)">◀</button>
+        <button type="button" onclick="change(1)">▶</button>
+      </div>
+    </div>
+    <div class="col left">
+      <button type="button" onclick="today()">Aujourd'hui 📅</button>
+      <button type="button" onclick="save()" style="margin-left: 1em;">Enregistrer 💾</button>
+    </div>
+  </div>
+
+  <div><a href="javascript:scale()" id=img></a></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
