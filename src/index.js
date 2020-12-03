@@ -11,13 +11,14 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1500,
     height: 900,
-    minWidth: 1100,
-    minHeight: 700,
+    minWidth: 900,
+    minHeight: 600,
     webPreferences: {
       nodeIntegration: true,
     }
   });
 
+  // Remove the menu.
   mainWindow.removeMenu();
 
   // and load the index.html of the app.

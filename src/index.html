@@ -5,15 +5,14 @@
   <meta charset="UTF-8">
   <title>Timetable Viewer</title>
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
-  <link rel="stylesheet" href="wing.css">
   <link rel="stylesheet" href="index.css">
+  <script defer src="render.js"></script>
 </head>
 
-<body class="text-center">
+<body>
   <div class="row menu">
     <div class="col left">
-      <p>Niveau:</p>
-      <select name="" id="code" onchange="updateImg()">
+      <select id="code">
         <optgroup label="M2">
           <option value="68419887">M2 SA</option>
           <option value="68419888">M2 SR</option>
@@ -50,25 +49,17 @@
           <option value="68426749">L1 MI G6</option>
         </optgroup>
       </select>
+      <button type="button" id="save" style="margin-left: 1em;">Enregistrer 💾</button>
     </div>
-    <div class="col left">
-      <p>Semaine:</p>
-      <div class="">
-        <input id="week" type="number" value="40" style="display: none;">
-
-        <button type="button" onclick="change(-1)">◀</button>
-        <button type="button" onclick="change(1)">▶</button>
-      </div>
-    </div>
-    <div class="col left">
-      <button type="button" onclick="today()">Aujourd'hui 📅</button>
-      <button type="button" onclick="save()" style="margin-left: 1em;">Enregistrer 💾</button>
+    <div class="col right">
+      <button type="button" id="previous-week">◀</button>
+      <button type="button" id="next-week">▶</button>
+      <button type="button" id="today-week" style="margin-left: 1em;">Aujourd'hui 📅</button>
     </div>
   </div>
 
-  <div><a href="javascript:scale()" id=img></a></div>
+  <div><a id="img"></a></div>
 
-  <script src="app.js"></script>
 </body>
 
 </html>

@@ -12,14 +12,13 @@
 
 ## About The Project
 
-[![Screen Shot][screenshot]]()
+[![Screen Shot][screenshot]](https://raw.githubusercontent.com/Matunknown/timetable-viewer/master/assets/screenshot.jpg)
 
 This application was designed to answer a problem my university provided a web application for the timetable but unfortunately the application is poorly done and aging, that's why I created this desktop application in order to facilitate the consultation of my timetable. 
 
 ### Built With
 
 * [Electron](https://www.electronjs.org/)
-* [Wing](https://kbrsh.github.io/wing/)
 
 ## Getting Started
 
@@ -56,4 +55,4 @@ This application was designed to answer a problem my university provided a web a
 
 Distributed under the MIT License.
 
-[screenshot]: assets/screenshot.png
+[screenshot]: assets/screenshot.jpg
