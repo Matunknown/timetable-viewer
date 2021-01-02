@@ -1,5 +1,10 @@
-const { app, BrowserWindow } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  dialog
+} = require('electron');
 const path = require('path');
+const fetch = require('node-fetch');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -33,9 +38,6 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
 
-// Ignore SSL errors.
-app.commandLine.appendSwitch('--ignore-certificate-errors')
-
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -55,3 +57,26 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+// Ignore SSL errors.
+app.commandLine.appendSwitch('--ignore-certificate-errors');
+
+// Check newer version.
+fetch('https://api.github.com/repos/Matunknown/timetable-viewer/releases').then(res => res.json()).then(json => {
+  const githubRelease = json[0].tag_name;
+  if (githubRelease.replace(/\D/g, '') > app.getVersion().replace(/\D/g, '')) {
+    const dialogOpts = {
+      type: 'info',
+      buttons: ['Télécharger', 'Plus tard'],
+      title: 'Mise à jour',
+      detail: 'Une nouvelle version du logiciel est disponible, vous pouvez la télécharger.'
+    };
+
+    dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) {
+        require('electron').shell.openExternal('https://github.com/Matunknown/timetable-viewer/releases/tag/' + githubRelease);
+        app.quit();
+      }
+    });
+  }
+});

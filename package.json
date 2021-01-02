@@ -1,7 +1,7 @@
 {
   "name": "timetable-viewer",
   "productName": "Timetable Viewer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Application for view your university timetable.",
   "main": "src/index.js",
   "scripts": {
@@ -12,6 +12,7 @@
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
+  "private": true,
   "author": {
     "name": "Mat"
   },
@@ -46,7 +47,8 @@
     }
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
