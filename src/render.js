@@ -1,10 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 
+const preferences = require(path.join(__dirname, 'preferences.json'));
+
 // Get week number
 Date.prototype.getWeek = function () {
-    const onejan = new Date(this.getFullYear(), 0, 1);
-    return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
 // Chnage code timetable
@@ -38,49 +43,44 @@ todayButton.onclick = e => {
 // Scale up the image
 const scaleButton = document.getElementById('img');
 scaleButton.onclick = e => {
-    const imgSrc = document.getElementById("img-src");
-    if (imgSrc.classList.contains("scale-up")) {
-        imgSrc.classList.remove("scale-up");
+    const imgSrc = document.getElementById('img-src');
+    if (imgSrc.classList.contains('scale-up')) {
+        imgSrc.classList.remove('scale-up');
     } else {
-        imgSrc.classList.add("scale-up");
+        imgSrc.classList.add('scale-up');
     }
 };
 
 // Save code in data file
 const saveButton = document.getElementById('save');
 saveButton.onclick = e => {
-    fs.writeFile(path.join(__dirname, 'data.txt'), code, function (err) {
-        if (err) return console.log(err);
-        console.log('Saved.');
+    preferences['code'] = code;
+    fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
+        if (err) console.log(err);
     });
 };
 
-const year = new Date().getFullYear();
 let code = codeSelect.value;
 let week = new Date().getWeek();
+// Get year (and check if the week number is between two years)
+const year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
 
 // Get code in data file
-fs.readFile(path.join(__dirname, 'data.txt'), 'utf8', function (err, data) {
-    if (err) {
-        updateImg();
-        return console.log(err);
-    }
-    code = data;
-    document.getElementById('code').value = code;
-    updateImg();
-});
+code = preferences['code'];
+document.getElementById('code').value = code;
+updateImg();
 
 // Keyboard event
-window.addEventListener('keyup', function (event) {
+window.addEventListener('keyup', (event) => {
     if (event.defaultPrevented) {
         return;
     }
 
     const key = event.key;
-    if (key == 'ArrowRight') {
+    if (key === 'ArrowRight') {
         week++;
         updateImg();
-    } else if (key == 'ArrowLeft') {
+    } else if (key === 'ArrowLeft') {
         week--;
         updateImg();
     }
