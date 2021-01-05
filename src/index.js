@@ -23,7 +23,8 @@ const createWindow = () => {
     minWidth: 900,
     minHeight: 600,
     webPreferences: {
-      nodeIntegration: true,
+      preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true
     }
   });
 
@@ -78,7 +79,7 @@ const createWindow = () => {
       ]
     },
     {
-      label: 'Paramètres',
+      label: 'Préférences',
       submenu: [{
           label: 'Maximiser à l\'ouverture',
           type: 'checkbox',
@@ -164,35 +165,35 @@ app.on('activate', () => {
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 // Check newer version.
-if(preferences['checkUpdate']) {
-fetch('https://api.github.com/repos/Matunknown/timetable-viewer/releases').then(res => res.json()).then(json => {
-  const githubRelease = json[0].tag_name;
-  if (githubRelease.replace(/\D/g, '') > app.getVersion().replace(/\D/g, '')) {
-    const dialogOpts = {
-      type: 'info',
-      buttons: ['Plus tard', 'Télécharger'],
-      title: 'Mise à jour',
-      detail: 'Une nouvelle version du logiciel est disponible, vous pouvez la télécharger et l\'exécuter.'
-    };
+if (preferences['checkUpdate']) {
+  fetch('https://api.github.com/repos/Matunknown/timetable-viewer/releases').then(res => res.json()).then(json => {
+    const githubRelease = json[0].tag_name;
+    if (githubRelease.replace(/\D/g, '') > app.getVersion().replace(/\D/g, '')) {
+      const dialogOpts = {
+        type: 'info',
+        buttons: ['Plus tard', 'Télécharger'],
+        title: 'Mise à jour',
+        detail: 'Une nouvelle version du logiciel est disponible, vous pouvez la télécharger et l\'exécuter.'
+      };
 
-    dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 1) {
-        let downloadUrl = 'https://github.com/Matunknown/timetable-viewer/releases/tag/' + githubRelease;
+      dialog.showMessageBox(dialogOpts).then((returnValue) => {
+        if (returnValue.response === 1) {
+          let downloadUrl = 'https://github.com/Matunknown/timetable-viewer/releases/tag/' + githubRelease;
 
-        if (process.platform === 'win32' && process.arch === 'x64') {
-          downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-windows-64bit-${githubRelease}.exe`;
-        } else if (process.platform === 'win32' && process.arch === 'ia32') {
-          downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-windows-32bit-${githubRelease}.exe`;
-        } else if (process.platform === 'linux') {
-          downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-linux-64bit-${githubRelease}.tar.gz`;
-        } else if (process.platform === 'darwin') {
-          downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-macos-64bit-${githubRelease}.zip`;
+          if (process.platform === 'win32' && process.arch === 'x64') {
+            downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-windows-64bit-${githubRelease}.exe`;
+          } else if (process.platform === 'win32' && process.arch === 'ia32') {
+            downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-windows-32bit-${githubRelease}.exe`;
+          } else if (process.platform === 'linux') {
+            downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-linux-64bit-${githubRelease}.tar.gz`;
+          } else if (process.platform === 'darwin') {
+            downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-macos-64bit-${githubRelease}.zip`;
+          }
+
+          require('electron').shell.openExternal(downloadUrl);
+          app.quit();
         }
-
-        require('electron').shell.openExternal(downloadUrl);
-        app.quit();
-      }
-    });
-  }
-});
+      });
+    }
+  });
 }
