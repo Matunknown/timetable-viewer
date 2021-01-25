@@ -3,62 +3,74 @@ const path = require('path');
 
 const preferences = require(path.join(__dirname, 'preferences.json'));
 
+// Get week number
+Date.prototype.getWeek = function () {
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+
+let code = 68426749;
+let week = new Date().getWeek();
+// Get year (and check if the week number is between two years)
+let year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+
 window.addEventListener('DOMContentLoaded', () => {
-    // Get week number
-    Date.prototype.getWeek = function () {
-        const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-        const dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    }
-
-    // Chnage code timetable
-    const codeSelect = document.getElementById('code');
-    codeSelect.onchange = e => {
-        code = codeSelect.value;
-        updateImg();
-    };
-
-    // Go to previous week
-    const previousButton = document.getElementById('previous-week');
-    previousButton.onclick = e => {
-        week--;
-        updateImg();
-    };
-
-    // Go to next week
-    const nextButton = document.getElementById('next-week');
-    nextButton.onclick = e => {
-        week++;
-        updateImg();
-    };
-
-    // Back to current week
-    const todayButton = document.getElementById('today-week');
-    todayButton.onclick = e => {
-        week = new Date().getWeek();
-        updateImg();
+    // Change timetable code
+    const codeInput = document.getElementById('code');
+    codeInput.onchange = e => {
+        code = codeInput.value;
+        updateImage();
     };
 
     // Save code in data file
     const saveButton = document.getElementById('save');
     saveButton.onclick = e => {
-        preferences['code'] = code;
-        fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
-            if (err) console.log(err);
-        });
+        if (process.platform !== 'darwin') {
+            preferences['code'] = code;
+            fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
+                if (err) console.log(err);
+            });
+        } else {
+            alert('Désolé cette fonctionnalité n\'est pas disponible sous macOS.');
+        }
     };
 
-    let code = codeSelect.value;
-    let week = new Date().getWeek();
-    // Get year (and check if the week number is between two years)
-    const year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+    // Go to previous week
+    const previousButton = document.getElementById('previous');
+    previousButton.onclick = e => {
+        previousWeek();
+    };
+
+    // Go to next week
+    const nextButton = document.getElementById('next');
+    nextButton.onclick = e => {
+        nextWeek();
+    };
+
+    // Back to current week
+    const todayButton = document.getElementById('today');
+    todayButton.onclick = e => {
+        week = new Date().getWeek();
+        year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+        updateImage();
+    };
+
+    // Go to selected week
+    const calendarInput = document.getElementById('calendar');
+    calendarInput.onchange = e => {
+        const calendarDate = new Date(calendarInput.value);
+        week = calendarDate.getWeek();
+        year = calendarDate.getFullYear();
+        updateImage();
+    }
 
     // Get code in data file
     code = preferences['code'];
-    document.getElementById('code').value = code;
-    updateImg();
+    codeInput.value = code;
+    updateImage();
 
     // Keyboard event
     window.addEventListener('keyup', (event) => {
@@ -68,17 +80,28 @@ window.addEventListener('DOMContentLoaded', () => {
 
         const key = event.key;
         if (key === 'ArrowRight') {
-            week++;
-            updateImg();
+            nextWeek();
         } else if (key === 'ArrowLeft') {
-            week--;
-            updateImg();
+            previousWeek();
         }
     });
 
-    // Update the image
-    function updateImg() {
-        document.querySelector('#img').innerHTML =
-            `<img id="img-src" src="https://edt.univ-evry.fr/vue_etudiant_horizontale.php?current_year=${year}&current_student=${code}&current_week=${week}&lar=1920&hau=1080" alt="">`;
+    function previousWeek() {
+        week--;
+        if (week <= 0) {
+            year--;
+            week = 52;
+        }
+        updateImage();
+    }
+
+    function nextWeek() {
+        week++;
+        updateImage();
+    }
+
+    function updateImage() {
+        document.querySelector('#image').innerHTML =
+            `<img id="timetable-image" src="https://edt.univ-evry.fr/vue_etudiant_horizontale.php?current_year=${year}&current_student=${code}&current_week=${week}&lar=1920&hau=1080" alt="">`;
     }
 });

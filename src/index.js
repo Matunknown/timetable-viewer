@@ -20,8 +20,8 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 1500,
     height: 900,
-    minWidth: 900,
-    minHeight: 600,
+    minWidth: 950,
+    minHeight: 650,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true
@@ -78,7 +78,7 @@ const createWindow = () => {
         }
       ]
     },
-    {
+    ...(process.platform !== 'darwin' ? [{
       label: 'Préférences',
       submenu: [{
           label: 'Maximiser à l\'ouverture',
@@ -126,6 +126,39 @@ const createWindow = () => {
             fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
               if (err) console.log(err)
             });
+          }
+        }
+      ]
+    }] : []),
+    {
+      role: 'help',
+      label: 'Aide',
+      submenu: [
+        {
+          label: 'Raccourcis',
+          click: async () => {
+            const dialogOpts = {
+              type: 'info',
+              buttons: ['Ok'],
+              title: 'Raccourcis',
+              detail: 'Flèche directionnelle gauche: Aller a la semaine précédente.\nFlèche directionnelle droite: Aller à la semaine suivante.'
+            };
+            dialog.showMessageBox(dialogOpts);
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'À propos de',
+          click: async () => {
+            const dialogOpts = {
+              type: 'info',
+              buttons: ['Ok'],
+              title: app.getName(),
+              detail: `Version: ${app.getVersion()}\nPlatform: ${process.platform}\n\nAuthor: Mat`
+            };
+            dialog.showMessageBox(dialogOpts);
           }
         }
       ]

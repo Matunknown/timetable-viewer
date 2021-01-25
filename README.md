@@ -1,6 +1,6 @@
 <br />
 <p align="center">
-  <img src="assets/logo.jpg" alt="Logo" width="80" height="80">
+  <img src="assets/logo.png" alt="Logo" width="80" height="80">
 
   <h3 align="center">Timetable Viewer</h3>
 
@@ -14,7 +14,7 @@
 
 [![Screen Shot][screenshot]](https://raw.githubusercontent.com/Matunknown/timetable-viewer/master/assets/screenshot.jpg)
 
-This application was designed to answer a problem my university provided a web application for the timetable but unfortunately the application is poorly done and aging, that's why I created this desktop application in order to facilitate the consultation of my timetable. 
+An application to consult his timetable for computer science students at the University of Evry.
 
 ### Built With
 

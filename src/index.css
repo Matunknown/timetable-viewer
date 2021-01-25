@@ -1,26 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
 
+:root {
+    --black: #212121;
+    --black-secondary: #252525;
+    --white: #f0f5f9;
+    --primary: #323232;
+    --secondary: #364f6b;
+}
+
 * {
     font-family: 'Poppins', sans-serif;
 }
 
 body {
     margin: 0;
-    background-color: #2c3e50;
-    color: white;
+    background-color: var(--primary);
+    color: var(--white);
     text-align: center;
-    animation-name: fadein;
-    animation-duration: 1s;
-}
-
-@keyframes fadein {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 100;
-    }
 }
 
 select {
@@ -29,13 +25,13 @@ select {
     max-width: 50%;
     border-radius: 2px;
     transition: all .2s ease;
-    background-color: black;
-    color: white;
-    border: 1px solid #111;
+    background-color: var(--black);
+    color: var(--white);
+    border: 1px solid var(--black);
 }
 
 select:hover {
-    border: 1px solid #111;
+    border: 1px solid var(--black);
 }
 
 select {
@@ -43,17 +39,17 @@ select {
 }
 
 button {
-    padding: 0.9rem 2.5rem;
+    padding: 0.9rem 2rem;
     margin: 1rem 0;
-    background: #111;
-    color: #f5f5f5;
+    background-color: var(--black);
+    color: var(--white);
     border-radius: 2px;
     border: none;
     transition: all .2s ease;
 }
 
 button:hover {
-    background: #222;
+    background: var(--black-secondary);
 }
 
 button:focus {
@@ -62,6 +58,17 @@ button:focus {
 
 button:active {
     transform: scale(.99);
+}
+
+input {
+    padding: 0.8rem;
+    background-color: var(--black);
+    color: var(--white);
+    border: none;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
 }
 
 .row {
@@ -97,7 +104,7 @@ button:active {
 .menu {
     padding-left: 2em;
     padding-right: 2em;
-    background-color: #34495e;
+    background-color: var(--secondary);
     margin-bottom: 1em;
 }
 
@@ -105,6 +112,18 @@ button:active {
     transform: scale(1.11);
 }
 
-#img-src {
+#timetable-image {
     width: 90%;
+    animation-name: fadein;
+    animation-duration: 2s;
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 100;
+    }
 }
