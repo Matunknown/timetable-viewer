@@ -133,8 +133,7 @@ const createWindow = () => {
     {
       role: 'help',
       label: 'Aide',
-      submenu: [
-        {
+      submenu: [{
           label: 'Raccourcis',
           click: async () => {
             const dialogOpts = {

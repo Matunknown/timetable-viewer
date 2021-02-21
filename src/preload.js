@@ -12,6 +12,19 @@ Date.prototype.getWeek = function () {
     return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
 }
 
+// Get number of weeks in the year
+function weeksInYear(year) {
+    const month = 11;
+    let day = 31;
+    let week;
+    do {
+        const d = new Date(year, month, day--);
+        week = d.getWeek();
+    } while (week == 1);
+
+    return week;
+}
+
 let code = 68426749;
 let week = new Date().getWeek();
 // Get year (and check if the week number is between two years)
@@ -22,7 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const codeInput = document.getElementById('code');
     codeInput.onchange = e => {
         code = codeInput.value;
-        updateImage();
+        update();
     };
 
     // Save code in data file
@@ -53,9 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Back to current week
     const todayButton = document.getElementById('today');
     todayButton.onclick = e => {
-        week = new Date().getWeek();
-        year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
-        updateImage();
+        today();
     };
 
     // Go to selected week
@@ -64,13 +75,27 @@ window.addEventListener('DOMContentLoaded', () => {
         const calendarDate = new Date(calendarInput.value);
         week = calendarDate.getWeek();
         year = calendarDate.getFullYear();
-        updateImage();
+        update();
+    }
+
+    const weekInput = document.getElementById('week');
+    weekInput.value = week;
+    weekInput.onchange = e => {
+        week = weekInput.value;
+        if (week > weeksInYear(year)) {
+            year++;
+            week = 1;
+        } else if (week <= 0) {
+            year--;
+            week = weeksInYear(year);
+        }
+        update();
     }
 
     // Get code in data file
     code = preferences['code'];
     codeInput.value = code;
-    updateImage();
+    update();
 
     // Keyboard event
     window.addEventListener('keyup', (event) => {
@@ -83,25 +108,39 @@ window.addEventListener('DOMContentLoaded', () => {
             nextWeek();
         } else if (key === 'ArrowLeft') {
             previousWeek();
+        } else if (key === 'Enter') {
+            today();
         }
     });
+
+    function today() {
+        week = new Date().getWeek();
+        year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+        update();
+    }
 
     function previousWeek() {
         week--;
         if (week <= 0) {
             year--;
-            week = 52;
+            week = weeksInYear(year);
         }
-        updateImage();
+        update();
     }
 
     function nextWeek() {
         week++;
-        updateImage();
+        if (week > weeksInYear(year)) {
+            year++;
+            week = 1;
+        }
+        update();
     }
 
-    function updateImage() {
-        document.querySelector('#image').innerHTML =
+    function update() {
+        weekInput.value = week;
+        document.getElementById("info").innerText = `Semaine: ${week} Année: ${year}`;
+        document.getElementById('image').innerHTML =
             `<img id="timetable-image" src="https://edt.univ-evry.fr/vue_etudiant_horizontale.php?current_year=${year}&current_student=${code}&current_week=${week}&lar=1920&hau=1080" alt="">`;
     }
 });

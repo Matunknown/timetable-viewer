@@ -61,7 +61,7 @@ button:active {
 }
 
 input {
-    padding: 0.8rem;
+    padding: 0.9rem;
     background-color: var(--black);
     color: var(--white);
     border: none;
@@ -116,6 +116,26 @@ input {
     width: 90%;
     animation-name: fadein;
     animation-duration: 2s;
+}
+
+#save,
+#today,
+#week,
+#calendar {
+    margin-left: 1em;
+}
+
+#next {
+    margin-left: 0.5em;
+}
+
+#week {
+    width: 40px;
+}
+
+#calendar {
+    padding: 0.8rem;
+    width: 9rem;
 }
 
 @keyframes fadein {
