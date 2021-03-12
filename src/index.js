@@ -11,7 +11,7 @@ const fs = require('fs');
 const preferences = require(path.join(__dirname, 'preferences.json'));
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
@@ -159,7 +159,7 @@ const createWindow = () => {
               type: 'info',
               buttons: ['Ok'],
               title: 'Raccourcis',
-              detail: 'Flèche directionnelle gauche: Aller a la semaine précédente.\nFlèche directionnelle droite: Aller à la semaine suivante.\nEntrée: Revenir à la semaine actuelle.',
+              detail: 'Flèche directionnelle gauche: Aller a la semaine précédente.\nFlèche directionnelle droite: Aller à la semaine suivante.\nMAJ (Shift): Revenir à la semaine actuelle.',
             };
             dialog.showMessageBox(dialogOpts);
           },

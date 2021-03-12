@@ -21,6 +21,6 @@
         "no-alert": "off",
         "no-extend-native": "off",
         "max-len": "off",
-        "no-use-before-define": "off"
+        "prefer-destructuring":"off"
     }
 }

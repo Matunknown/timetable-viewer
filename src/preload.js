@@ -25,10 +25,38 @@ function weeksInYear(year) {
     return week;
 }
 
-let code = 68426749;
+let code = preferences.code;
 let week = new Date().getWeek();
-// Get year (and check if the week number is between two years)
-let year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+let year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear(); // Get year (and check if the week number is between two years)
+
+function update() {
+    document.getElementById('info').innerText = `Semaine: ${week} Année: ${year}`;
+    document.getElementById('image').innerHTML = `<img id="timetable-image" src="https://edt.univ-evry.fr/vue_etudiant_horizontale.php?current_year=${year}&current_student=${code}&current_week=${week}&lar=1920&hau=1080" alt="">`;
+}
+
+function today() {
+    week = new Date().getWeek();
+    year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
+    update();
+}
+
+function previousWeek() {
+    week -= 1;
+    if (week <= 0) {
+        year -= 1;
+        week = weeksInYear(year);
+    }
+    update();
+}
+
+function nextWeek() {
+    week += 1;
+    if (week > weeksInYear(year)) {
+        year += 1;
+        week = 1;
+    }
+    update();
+}
 
 window.addEventListener('DOMContentLoaded', () => {
     // Menu preference
@@ -39,6 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Change timetable code
     const codeInput = document.getElementById('code');
+    codeInput.value = code; // Initialize
     codeInput.onchange = () => {
         code = codeInput.value;
         update();
@@ -75,7 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
         today();
     };
 
-    // Go to selected week
+    // Go to selected date
     const calendarInput = document.getElementById('calendar');
     calendarInput.onchange = () => {
         const calendarDate = new Date(calendarInput.value);
@@ -84,8 +113,9 @@ window.addEventListener('DOMContentLoaded', () => {
         update();
     };
 
+    // Go to selected week
     const weekInput = document.getElementById('week');
-    weekInput.value = week;
+    weekInput.value = week; // Initialize
     weekInput.onchange = () => {
         week = weekInput.value;
         if (week > weeksInYear(year)) {
@@ -98,54 +128,21 @@ window.addEventListener('DOMContentLoaded', () => {
         update();
     };
 
-    // Get code in data file
-    code = preferences.code;
-    codeInput.value = code;
-    update();
+    update(); // Initialize
+});
 
-    // Keyboard event
-    window.addEventListener('keyup', (event) => {
-        if (event.defaultPrevented) {
-            return;
-        }
-
-        const { key } = event;
-        if (key === 'ArrowRight') {
-            nextWeek();
-        } else if (key === 'ArrowLeft') {
-            previousWeek();
-        } else if (key === 'Enter') {
-            today();
-        }
-    });
-
-    function today() {
-        week = new Date().getWeek();
-        year = (new Date().getMonth() === 0 && week >= 52) ? new Date().getFullYear() - 1 : new Date().getFullYear();
-        update();
+// Keyboard event
+window.addEventListener('keyup', (event) => {
+    if (event.defaultPrevented) {
+        return;
     }
 
-    function previousWeek() {
-        week -= 1;
-        if (week <= 0) {
-            year -= 1;
-            week = weeksInYear(year);
-        }
-        update();
-    }
-
-    function nextWeek() {
-        week += 1;
-        if (week > weeksInYear(year)) {
-            year += 1;
-            week = 1;
-        }
-        update();
-    }
-
-    function update() {
-        weekInput.value = week;
-        document.getElementById('info').innerText = `Semaine: ${week} Année: ${year}`;
-        document.getElementById('image').innerHTML = `<img id="timetable-image" src="https://edt.univ-evry.fr/vue_etudiant_horizontale.php?current_year=${year}&current_student=${code}&current_week=${week}&lar=1920&hau=1080" alt="">`;
+    const { key } = event;
+    if (key === 'ArrowRight') {
+        nextWeek();
+    } else if (key === 'ArrowLeft') {
+        previousWeek();
+    } else if (key === 'Shift') {
+        today();
     }
 });
