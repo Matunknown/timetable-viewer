@@ -35,11 +35,11 @@ select:hover {
 }
 
 select {
-    padding: 0.8rem;
+    padding: 0.5rem;
 }
 
 button {
-    padding: 0.9rem 2rem;
+    padding: 0.6rem 1rem;
     margin: 1rem 0;
     background-color: var(--black);
     color: var(--white);
@@ -61,7 +61,7 @@ button:active {
 }
 
 input {
-    padding: 0.9rem;
+    padding: 0.6rem;
     background-color: var(--black);
     color: var(--white);
     border: none;
@@ -105,20 +105,26 @@ input {
     padding-left: 2em;
     padding-right: 2em;
     background-color: var(--secondary);
-    margin-bottom: 1em;
 }
 
 .scale-up {
-    transform: scale(1.11);
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.hide {
+    display: none;
 }
 
 #timetable-image {
-    width: 90%;
+    width: 100%;
     animation-name: fadein;
     animation-duration: 2s;
 }
 
 #save,
+#previous,
 #today,
 #week,
 #calendar {
@@ -134,7 +140,7 @@ input {
 }
 
 #calendar {
-    padding: 0.8rem;
+    padding: 0.5rem;
     width: 9rem;
 }
 

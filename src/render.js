@@ -1,6 +1,6 @@
 // Scale up the image
 const image = document.getElementById('image');
-image.onclick = e => {
+image.onclick = () => {
     const timetableImage = document.getElementById('timetable-image');
     if (timetableImage.classList.contains('scale-up')) {
         timetableImage.classList.remove('scale-up');

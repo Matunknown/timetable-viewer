@@ -2,11 +2,11 @@ const {
   app,
   BrowserWindow,
   dialog,
-  Menu
+  Menu,
 } = require('electron');
 const path = require('path');
 const fetch = require('node-fetch');
-const fs = require('fs')
+const fs = require('fs');
 
 const preferences = require(path.join(__dirname, 'preferences.json'));
 
@@ -24,8 +24,8 @@ const createWindow = () => {
     minHeight: 650,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true
-    }
+      contextIsolation: true,
+    },
   });
 
   // and load the index.html of the app.
@@ -35,100 +35,119 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools();
 
   // Maximize window
-  if (preferences['maximize']) mainWindow.maximize();
+  if (preferences.maximize) mainWindow.maximize();
 
-  if (preferences['fullscreen']) mainWindow.setFullScreen(true);
+  if (preferences.fullscreen) mainWindow.setFullScreen(true);
 
   // Menu
   const template = [{
       label: 'Fichier',
       submenu: [{
         role: 'quit',
-        label: 'Quitter'
-      }]
+        label: 'Quitter',
+      }],
     },
     {
       label: 'Affichage',
       submenu: [{
           role: 'reload',
-          label: 'Actualiser'
+          label: 'Actualiser',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           role: 'zoomIn',
-          label: 'Zoom avant'
+          label: 'Zoom avant',
 
         },
         {
           role: 'zoomOut',
-          label: 'Zoom arrière'
+          label: 'Zoom arrière',
         },
         {
           role: 'resetZoom',
-          label: 'Réinitialiser le zoom'
+          label: 'Réinitialiser le zoom',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           role: 'togglefullscreen',
-          label: 'Plein écran'
-        }
-      ]
+          label: 'Plein écran',
+        },
+      ],
     },
     ...(process.platform !== 'darwin' ? [{
       label: 'Préférences',
       submenu: [{
           label: 'Maximiser à l\'ouverture',
           type: 'checkbox',
-          checked: preferences['maximize'],
+          checked: preferences.maximize,
           click: async () => {
-            if (preferences['maximize']) {
-              preferences['maximize'] = false;
+            if (preferences.maximize) {
+              preferences.maximize = false;
             } else {
-              preferences['maximize'] = true;
+              preferences.maximize = true;
             }
             fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
-              if (err) console.log(err)
+              if (err) console.log(err);
             });
-          }
+          },
         },
         {
           label: 'Plein écran à l\'ouverture',
           type: 'checkbox',
-          checked: preferences['fullscreen'],
+          checked: preferences.fullscreen,
           click: async () => {
-            if (preferences['fullscreen']) {
-              preferences['fullscreen'] = false;
+            if (preferences.fullscreen) {
+              preferences.fullscreen = false;
             } else {
-              preferences['fullscreen'] = true;
+              preferences.fullscreen = true;
             }
             fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
-              if (err) console.log(err)
+              if (err) console.log(err);
             });
-          }
+          },
         },
         {
-          type: 'separator'
+          type: 'separator',
+        },
+        {
+          label: 'Afficher le menu',
+          type: 'checkbox',
+          checked: preferences.menu,
+          click: async () => {
+            if (preferences.menu) {
+              preferences.menu = false;
+            } else {
+              preferences.menu = true;
+            }
+            mainWindow.reload();
+            fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
+              if (err) console.log(err);
+            });
+          },
+        },
+        {
+          type: 'separator',
         },
         {
           label: 'Vérifier les mises à jour',
           type: 'checkbox',
-          checked: preferences['checkUpdate'],
+          checked: preferences.checkUpdate,
           click: async () => {
-            if (preferences['checkUpdate']) {
-              preferences['checkUpdate'] = false;
+            if (preferences.checkUpdate) {
+              preferences.checkUpdate = false;
             } else {
-              preferences['checkUpdate'] = true;
+              preferences.checkUpdate = true;
             }
             fs.writeFile(path.join(__dirname, 'preferences.json'), JSON.stringify(preferences), (err) => {
-              if (err) console.log(err)
+              if (err) console.log(err);
             });
-          }
-        }
-      ]
+          },
+        },
+      ],
     }] : []),
     {
       role: 'help',
@@ -140,13 +159,13 @@ const createWindow = () => {
               type: 'info',
               buttons: ['Ok'],
               title: 'Raccourcis',
-              detail: 'Flèche directionnelle gauche: Aller a la semaine précédente.\nFlèche directionnelle droite: Aller à la semaine suivante.'
+              detail: 'Flèche directionnelle gauche: Aller a la semaine précédente.\nFlèche directionnelle droite: Aller à la semaine suivante.\nEntrée: Revenir à la semaine actuelle.',
             };
             dialog.showMessageBox(dialogOpts);
-          }
+          },
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'À propos de',
@@ -155,17 +174,17 @@ const createWindow = () => {
               type: 'info',
               buttons: ['Ok'],
               title: app.getName(),
-              detail: `Version: ${app.getVersion()}\nPlatform: ${process.platform}\n\nAuthor: Mat`
+              detail: `Version: ${app.getVersion()}\nPlatform: ${process.platform}\n\nAuthor: Mat`,
             };
             dialog.showMessageBox(dialogOpts);
-          }
-        }
-      ]
-    }
+          },
+        },
+      ],
+    },
   ];
 
-  const menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 };
 
 // This method will be called when Electron has finished
@@ -197,20 +216,20 @@ app.on('activate', () => {
 app.commandLine.appendSwitch('--ignore-certificate-errors');
 
 // Check newer version.
-if (preferences['checkUpdate']) {
-  fetch('https://api.github.com/repos/Matunknown/timetable-viewer/releases').then(res => res.json()).then(json => {
+if (preferences.checkUpdate) {
+  fetch('https://api.github.com/repos/Matunknown/timetable-viewer/releases').then((res) => res.json()).then((json) => {
     const githubRelease = json[0].tag_name;
     if (githubRelease.replace(/\D/g, '') > app.getVersion().replace(/\D/g, '')) {
       const dialogOpts = {
         type: 'info',
         buttons: ['Plus tard', 'Télécharger'],
         title: 'Mise à jour',
-        detail: 'Une nouvelle version du logiciel est disponible, vous pouvez la télécharger et l\'exécuter.'
+        detail: 'Une nouvelle version du logiciel est disponible, vous pouvez la télécharger et l\'exécuter.',
       };
 
       dialog.showMessageBox(dialogOpts).then((returnValue) => {
         if (returnValue.response === 1) {
-          let downloadUrl = 'https://github.com/Matunknown/timetable-viewer/releases/tag/' + githubRelease;
+          let downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/tag/${githubRelease}`;
 
           if (process.platform === 'win32' && process.arch === 'x64') {
             downloadUrl = `https://github.com/Matunknown/timetable-viewer/releases/download/${githubRelease}/Timetable.Viewer-windows-64bit-${githubRelease}.exe`;
